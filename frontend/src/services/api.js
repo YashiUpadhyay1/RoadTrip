@@ -1,14 +1,12 @@
 import axios from "axios";
 
-// ✅ Dynamically set the backend URL:
-// - During local development → uses localhost:5000
-// - In production (Netlify) → uses VITE_API_BASE_URL from environment
+// Create an Axios instance with a base URL
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api",
+  baseURL: "http://localhost:5000/api",
 });
 
 /**
- * ✅ Automatically attach JWT token to every request.
+ * Interceptor to automatically attach the JWT token to every request.
  */
 API.interceptors.request.use(
   (config) => {
@@ -18,24 +16,32 @@ API.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    return Promise.reject(error);
+  }
 );
 
 // --- Trip API Calls ---
 
-/** Fetch all road trips (requires JWT). */
+/**
+ * Fetches all road trips from the backend (requires JWT).
+ */
 export const fetchTrips = async () => {
   const res = await API.get("/trips");
   return res.data;
 };
 
-/** Create a new road trip (requires JWT). */
+/**
+ * Creates a new road trip (requires JWT).
+ */
 export const createTrip = async (tripData) => {
   const res = await API.post("/trips", tripData);
   return res.data;
 };
 
-/** Delete a trip (requires JWT & ownership). */
+/**
+ * Deletes a specific trip (requires JWT and ownership).
+ */
 export const deleteTrip = async (tripId) => {
   const res = await API.delete(`/trips/${tripId}`);
   return res.data;
@@ -43,24 +49,22 @@ export const deleteTrip = async (tripId) => {
 
 // --- Auth API Calls ---
 
-/** Sign up a new user and store the token. */
+/**
+ * Signs up a new user. Stores token and user info on success.
+ */
 export const signupUser = async (userData) => {
   const res = await API.post("/auth/signup", userData);
   localStorage.setItem("token", res.data.token);
-  return {
-    _id: res.data._id,
-    username: res.data.username,
-    email: res.data.email,
-  };
+  // Store user info (excluding token)
+  return { _id: res.data._id, username: res.data.username, email: res.data.email };
 };
 
-/** Log in a user and store the token. */
+/**
+ * Logs in a user. Stores token and user info on success.
+ */
 export const loginUser = async (credentials) => {
   const res = await API.post("/auth/login", credentials);
   localStorage.setItem("token", res.data.token);
-  return {
-    _id: res.data._id,
-    username: res.data.username,
-    email: res.data.email,
-  };
+  // Store user info (excluding token)
+  return { _id: res.data._id, username: res.data.username, email: res.data.email };
 };
