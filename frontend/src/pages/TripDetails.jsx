@@ -1,21 +1,16 @@
+/**
+ * @fileoverview A page component that fetches and displays the detailed information for a single road trip.
+ * @module pages/TripDetails
+ */
+
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, MapPin, Calendar, Clock, Loader2 } from 'lucide-react';
+import RouteMap from '../components/RouteMap';
 
-// Assuming you will create this component
-import RouteMap from '../components/RouteMap'; 
-// Assuming you have an API service function to fetch a single trip
-// import { fetchTripDetails } from '../services/api'; 
-
-// --- DUMMY fetchTripDetails for now ---
-// Replace this with your actual API call:
+// DUMMY API FUNCTION (for demonstration)
 const fetchTripDetails = async (id) => {
-    // In a real app, this would call your backend:
-    // const response = await fetch(`/api/trips/${id}`);
-    // return response.json();
-
-    // DUMMY DATA (Remove this block when connecting to your API)
-    await new Promise(resolve => setTimeout(resolve, 500)); 
+    await new Promise(resolve => setTimeout(resolve, 500));
     if (id === 'trip-1') {
         return {
             _id: 'trip-1',
@@ -34,12 +29,37 @@ const fetchTripDetails = async (id) => {
     }
     throw new Error('Trip not found');
 };
-// ------------------------------------
 
+/**
+ * Represents a single stop or location on a road trip.
+ * @typedef {object} Location
+ * @property {string} name - The user-provided name of the location.
+ * @property {number} latitude - The geographic latitude of the location.
+ * @property {number} longitude - The geographic longitude of the location.
+ */
 
+/**
+ * Represents the detailed data for a single trip.
+ * @typedef {object} TripDetailsData
+ * @property {string} _id - The unique ID of the trip.
+ * @property {string} title - The title of the trip.
+ * @property {string} description - A detailed description of the trip.
+ * @property {Array<Location>} locations - An array of location objects for the trip route.
+ * @property {string} [duration] - The estimated duration of the trip (e.g., "7 Days").
+ * @property {string} [distance] - The estimated distance of the trip (e.g., "1,200 km").
+ * @property {object} createdBy - The user who created the trip.
+ * @property {string} createdBy.username - The username of the creator.
+ * @property {string} createdAt - The ISO date string of when the trip was created.
+ */
+
+/**
+ * The TripDetails page component.
+ * It fetches a single trip's data based on the ID from the URL parameters,
+ * handles loading and error states, and displays the trip's title, description,
+ * stops, and a map overview using the `RouteMap` component.
+ */
 const TripDetails = () => {
-    // Get the trip ID from the URL (e.g., /trips/trip-1)
-    const { id } = useParams(); 
+    const { id } = useParams();
     const [trip, setTrip] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -87,7 +107,7 @@ const TripDetails = () => {
     }
 
     if (!trip) {
-        return null; // Should be handled by error state, but a safeguard
+        return null; // Safeguard in case of no trip and no error
     }
 
     return (
@@ -99,13 +119,12 @@ const TripDetails = () => {
             <div className="bg-white p-6 rounded-2xl shadow-2xl border-t-4 border-indigo-600 mb-8">
                 <h1 className="text-4xl font-extrabold text-gray-900 mb-2">{trip.title}</h1>
                 <p className="text-lg text-gray-600 mb-4">{trip.description}</p>
-                
+
                 <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-500 mb-6">
                     <span className="flex items-center">
                         <Calendar className="w-4 h-4 mr-1 text-green-500" />
                         Planned: {new Date(trip.createdAt).toLocaleDateString()}
                     </span>
-                    {/* Display route information if available from API/Routing Machine */}
                     {trip.duration && (
                         <span className="flex items-center">
                             <Clock className="w-4 h-4 mr-1 text-yellow-600" />
@@ -122,13 +141,9 @@ const TripDetails = () => {
 
                 <div className="mb-8">
                     <h2 className="text-2xl font-semibold text-gray-800 mb-3 border-b pb-1">Route Overview</h2>
-                    
-                    {/* 💥 STEP 2 INTEGRATION: Display the Route Map */}
-                    {/* Ensure your RouteMap component is in src/components/RouteMap.jsx */}
-                    <RouteMap trip={trip} /> 
-                    
+                    <RouteMap trip={trip} />
                 </div>
-                
+
                 <h2 className="text-2xl font-semibold text-gray-800 mb-3">Stops List</h2>
                 <ol className="list-decimal list-inside space-y-2 pl-4 text-gray-700">
                     {trip.locations.map((loc, index) => (

@@ -1,6 +1,16 @@
 import React from "react";
-import { Globe, User, LogOut, LogIn, Home as HomeIcon } from "lucide-react";
+import { Globe, User, LogOut, LogIn } from "lucide-react";
 
+/**
+ * Renders the main application navigation bar.
+ * It displays the application title and provides conditional user controls
+ * for login, logout, and profile navigation based on the user's authentication state.
+ *
+ * @param {object} props - The component's props.
+ * @param {object | null} props.user - The authenticated user object. If null, the component displays a "Login" button.
+ * @param {() => void} props.handleLogout - The function to execute when the user clicks the logout button.
+ * @param {(path: string) => void} props.navigate - The navigation function, used to change application routes.
+ */
 const Navbar = ({ user, handleLogout, navigate }) => {
   return (
     <nav className="bg-indigo-600 text-white shadow-lg">
