@@ -31,7 +31,8 @@ const app = express();
  * The origin should be set to your live frontend URL to block requests from other websites.
  */
 const corsOptions = {
-  origin: 'https://your-netlify-site-url.netlify.app', // 👈 Replace with your actual Netlify URL
+  // FIX: Updated the origin to match the live Netlify frontend URL to resolve the CORS error.
+  origin: 'https://benevolent-kleicha-a7a703.netlify.app', // 👈 Your actual Netlify URL
 };
 app.use(cors(corsOptions));
 
@@ -52,13 +53,13 @@ app.use(express.json());
  * @function connectDB
  */
 const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log('✅ MongoDB Connected successfully');
-  } catch (err) {
-    console.error('❌ MongoDB connection failed:', err.message);
-    process.exit(1); // Exit process with a failure code
-  }
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log('✅ MongoDB Connected successfully');
+  } catch (err) {
+    console.error('❌ MongoDB connection failed:', err.message);
+    process.exit(1); // Exit process with a failure code
+  }
 };
 connectDB();
 
@@ -66,12 +67,12 @@ connectDB();
 // --- API ROUTES ---
 
 /**
- * @route   GET /
- * @desc    Root endpoint to confirm the API is running.
- * @access  Public
+ * @route   GET /
+ * @desc    Root endpoint to confirm the API is running.
+ * @access  Public
  */
 app.get('/', (req, res) => {
-  res.send('🚗 RoadTrip Planner API is running...');
+  res.send('🚗 RoadTrip Planner API is running...');
 });
 
 /**
